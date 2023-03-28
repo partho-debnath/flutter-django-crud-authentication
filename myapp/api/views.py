@@ -33,5 +33,11 @@ class ListView(generics.ListAPIView):
 
 
 
+class DeleteTaskView(generics.DestroyAPIView):
+    permission_classes = [IsAuthenticated, ]
+    authentication_classes = [TokenAuthentication, ]
+    lookup_field = 'id'
 
-
+    def get_queryset(self):
+        query = UserTask.objects.filter(user=self.request.user, id=self.kwargs.get('id'))
+        return query
