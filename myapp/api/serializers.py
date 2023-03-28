@@ -18,4 +18,5 @@ class UserTaskSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserTask
-        fields = '__all__'
+        # fields = '__all__'
+        exclude = ['user', ]

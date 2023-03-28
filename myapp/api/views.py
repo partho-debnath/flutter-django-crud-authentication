@@ -19,11 +19,23 @@ class UserCreateView(generics.CreateAPIView):
         user = User.objects.create_user(**serializer.data)
         user.set_password(raw_password=self.request.POST.get('password'))
         user.save()
+
+
+class TaskCreateView(generics.ListCreateAPIView):
+
+    permission_classes = [IsAuthenticated, ]
+    authentication_classes = [TokenAuthentication, ]
+    serializer_class = UserTaskSerializer
+    queryset = UserTask.objects.all().order_by('-id')
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
         return
-    
+
+
 
 class ListView(generics.ListAPIView):
-    
+
     permission_classes = [IsAuthenticated, ]
     authentication_classes = [TokenAuthentication, ]
     serializer_class = UserTaskSerializer
@@ -32,12 +44,29 @@ class ListView(generics.ListAPIView):
         return UserTask.objects.filter(user=self.request.user).order_by('created')
 
 
+class TaskDetailsView(generics.RetrieveAPIView):
 
-class DeleteTaskView(generics.DestroyAPIView):
     permission_classes = [IsAuthenticated, ]
     authentication_classes = [TokenAuthentication, ]
+    serializer_class = UserTaskSerializer
     lookup_field = 'id'
 
     def get_queryset(self):
         query = UserTask.objects.filter(user=self.request.user, id=self.kwargs.get('id'))
         return query
+
+
+class TaskDeleteView(TaskDetailsView, generics.DestroyAPIView):
+    pass
+
+
+class TaskUpdateView(generics.UpdateAPIView):
+    permission_classes = [IsAuthenticated, ]
+    authentication_classes = [TokenAuthentication, ]
+    serializer_class = UserTaskSerializer
+    lookup_field = 'id'
+
+    def get_queryset(self):
+        query = UserTask.objects.filter(user=self.request.user, id=self.kwargs.get('id'))
+        return query
+    
