@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './providers/user_provider.dart';
+import './providers/task_provider.dart';
 
 import './screens/login_screen.dart';
+import './screens/list_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,11 +15,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => UserProvider(),
-      child: const MaterialApp(
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => TaskProvider(),
+        ),
+      ],
+      child: MaterialApp(
         title: 'Django-Flutter',
-        home: LoginScreen(),
+        initialRoute: LoginScreen.routeName,
+        routes: {
+          LoginScreen.routeName: (cntxt) => const LoginScreen(),
+          ListScreen.routeName: (cntxt) => const ListScreen(),
+        },
       ),
     );
   }

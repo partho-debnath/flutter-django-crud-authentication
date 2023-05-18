@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/user_provider.dart';
+import './list_screen.dart';
+
+import '../providers/task_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String routeName = '/login-screen';
@@ -13,10 +15,10 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   GlobalKey<FormState> _form = GlobalKey<FormState>();
-  bool _password_visibility_off = true;
+  bool _passwordVisibilityOff = true;
   String? _username;
   String? _password;
-  String? _error_message;
+  String? _errorMessage;
 
   bool _isValid() {
     if (_form.currentState!.validate() == false) {
@@ -32,17 +34,20 @@ class _LoginScreenState extends State<LoginScreen> {
 
     _form.currentState!.save();
 
-    UserProvider userProvider =
-        Provider.of<UserProvider>(context, listen: false);
+    TaskProvider userProvider =
+        Provider.of<TaskProvider>(context, listen: false);
     var responce =
         userProvider.loginUser(_username as String, _password as String);
     responce.then((value) {
       if (value != null) {
         setState(() {
-          _error_message = value;
+          _errorMessage = value;
         });
       } else {
-        _error_message = null;
+        _errorMessage = null;
+        Provider.of<TaskProvider>(context, listen: false).fetchTask();
+
+        Navigator.of(context).pushReplacementNamed(ListScreen.routeName);
       }
     });
   }
@@ -63,9 +68,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: <Widget>[
                   TextFormField(
                     decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.email),
+                      prefixIcon: const Icon(Icons.email),
                       labelText: 'Username',
-                      errorText: _error_message,
+                      errorText: _errorMessage,
                     ),
                     keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,
@@ -81,22 +86,21 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 10),
                   TextFormField(
-                    obscureText: _password_visibility_off,
+                    obscureText: _passwordVisibilityOff,
                     decoration: InputDecoration(
                       prefixIcon: const Icon(Icons.password),
                       labelText: 'Password',
                       suffixIcon: IconButton(
                         onPressed: () {
                           setState(() {
-                            _password_visibility_off =
-                                !_password_visibility_off;
+                            _passwordVisibilityOff = !_passwordVisibilityOff;
                           });
                         },
-                        icon: Icon(_password_visibility_off == true
+                        icon: Icon(_passwordVisibilityOff == true
                             ? Icons.visibility
                             : Icons.visibility_off),
                       ),
-                      errorText: _error_message,
+                      errorText: _errorMessage,
                     ),
                     keyboardType: TextInputType.text,
                     textInputAction: TextInputAction.done,
