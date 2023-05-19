@@ -80,7 +80,7 @@ class TaskItem extends StatelessWidget {
           },
         ),
         onTap: () {
-          print(task.id);
+          debugPrint(task.id.toString());
         },
       ),
     );

@@ -65,10 +65,10 @@ class TaskProvider with ChangeNotifier {
         tasks.add(Task(
           id: item['id'],
           task: item['task'],
+          isfavorite: item['isfavorite'],
           iscomplete: item['iscomplete'],
           created: item['created'],
           updated: item['updated'],
-          isfavorite: item['isfavorite'],
         ));
       }
     } catch (error) {
@@ -112,6 +112,51 @@ class TaskProvider with ChangeNotifier {
       };
 
       await http.patch(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'TOKEN ${_user!.getToken()}',
+        },
+        body: json.encode(task),
+      );
+    } catch (error) {
+      throw error.toString();
+    }
+  }
+
+  Future<void> updateTaskText(int id) async {
+    Task existingTask = getTaskById(id);
+    try {
+      var url = Uri.parse('${domain}task-list/$id/update-task/');
+      Map<String, dynamic> task = {
+        'task': existingTask.task,
+      };
+
+      await http.patch(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'TOKEN ${_user!.getToken()}',
+        },
+        body: json.encode(task),
+      );
+    } catch (error) {
+      throw error.toString();
+    }
+  }
+
+  Future<void> updateTask(int id) async {
+    Task existingTask = getTaskById(id);
+    try {
+      var url = Uri.parse('${domain}task-list/$id/update-task/');
+      Map<String, dynamic> task = {
+        'id': existingTask.id,
+        'task': existingTask.task,
+        'iscomplete': existingTask.iscomplete,
+        'isfavorite': existingTask.isfavorite,
+      };
+
+      await http.put(
         url,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
