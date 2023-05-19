@@ -17,6 +17,10 @@ class TaskProvider with ChangeNotifier {
     return _tasks;
   }
 
+  void logout() {
+    _user = null;
+  }
+
   Future<String?> loginUser(String email, String password) async {
     Map<String, String> user = {'username': email, 'password': password};
 

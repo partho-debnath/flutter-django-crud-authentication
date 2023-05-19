@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 
 import '../providers/task_provider.dart';
 import '../providers/taks.dart';
-import '../screens/detail_screen.dart';
+import '../screens/details_and_edit_screen.dart';
 
 class TaskItem extends StatelessWidget {
   const TaskItem({super.key});
@@ -36,7 +36,7 @@ class TaskItem extends StatelessWidget {
       confirmDismiss: (direction) {
         return showDialog<bool>(
             context: context,
-            builder: (cntxtx) {
+            builder: (cntxt) {
               return AlertDialog(
                 icon: const Icon(Icons.delete_forever),
                 iconColor: Colors.red,
@@ -49,13 +49,13 @@ class TaskItem extends StatelessWidget {
                 actions: [
                   TextButton(
                     onPressed: () {
-                      Navigator.of(context).pop(false);
+                      Navigator.of(cntxt).pop(false);
                     },
                     child: const Text('No'),
                   ),
                   TextButton(
                     onPressed: () {
-                      Navigator.of(context).pop(true);
+                      Navigator.of(cntxt).pop(true);
                     },
                     child: const Text(
                       'Yes',
@@ -107,7 +107,7 @@ class TaskItem extends StatelessWidget {
           onTap: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => TaskDetailScreen(
+                builder: (context) => TaskDetailAndEditScreen(
                   taskDetail: task,
                 ),
               ),

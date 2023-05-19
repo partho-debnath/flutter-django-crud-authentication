@@ -4,10 +4,45 @@ import 'package:provider/provider.dart';
 import '../providers/task_provider.dart';
 
 import '../widgets/task_item.dart';
+import './login_screen.dart';
+
+enum SelectedOptions { logout }
 
 class ListScreen extends StatelessWidget {
   static const String routeName = '/list-screen';
   const ListScreen({super.key});
+
+  Future<bool?> showLogoutDialog(BuildContext context) {
+    return showDialog<bool>(
+      context: context,
+      builder: (cntxt) {
+        return AlertDialog(
+          icon: const Icon(Icons.logout),
+          title: const Text('Are you sure?'),
+          content: const Text('Are you want to logout?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(cntxt).pop(false);
+              },
+              child: const Text('No'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(cntxt).pop(true);
+              },
+              child: const Text(
+                'Yes',
+                style: TextStyle(
+                  color: Colors.red,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +51,35 @@ class ListScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Tasks'),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.add),
+          ),
+          PopupMenuButton<SelectedOptions>(
+            onSelected: (SelectedOptions selectedOptions) {
+              switch (selectedOptions) {
+                case SelectedOptions.logout:
+                  showLogoutDialog(context).then((value) {
+                    if (value == true) {
+                      userTaskProvider.logout();
+                      Navigator.of(context)
+                          .pushReplacementNamed(LoginScreen.routeName);
+                    }
+                  });
+              }
+            },
+            itemBuilder: (cntxt) {
+              return [
+                const PopupMenuItem<SelectedOptions>(
+                  value: SelectedOptions.logout,
+                  child: Text('Logout'),
+                ),
+              ];
+            },
+            child: const Icon(Icons.more_vert),
+          ),
+        ],
       ),
       body: RefreshIndicator(
         onRefresh: () {

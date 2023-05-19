@@ -4,16 +4,17 @@ import 'package:provider/provider.dart';
 import '../providers/taks.dart';
 import '../providers/task_provider.dart';
 
-class TaskDetailScreen extends StatefulWidget {
+class TaskDetailAndEditScreen extends StatefulWidget {
   static const String routeName = "/task-detail-screen";
   final Task taskDetail;
-  const TaskDetailScreen({required this.taskDetail, super.key});
+  const TaskDetailAndEditScreen({required this.taskDetail, super.key});
 
   @override
-  State<TaskDetailScreen> createState() => _TaskDetailScreenState();
+  State<TaskDetailAndEditScreen> createState() =>
+      _TaskDetailAndEditScreenState();
 }
 
-class _TaskDetailScreenState extends State<TaskDetailScreen> {
+class _TaskDetailAndEditScreenState extends State<TaskDetailAndEditScreen> {
   TextEditingController? _taskController;
   bool? isfavorite, iscomplete;
 
