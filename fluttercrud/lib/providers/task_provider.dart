@@ -167,5 +167,27 @@ class TaskProvider with ChangeNotifier {
     } catch (error) {
       throw error.toString();
     }
+
+    notifyListeners();
+  }
+
+  void deleteTaskFromList(int id) {
+    tasks.removeWhere((item) => item.id == id);
+    deleteTask(id);
+  }
+
+  Future<void> deleteTask(int id) async {
+    try {
+      var url = Uri.parse('${domain}task-list/$id/delete-task/');
+      await http.delete(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'TOKEN ${_user!.getToken()}',
+        },
+      );
+    } catch (error) {
+      throw error.toString();
+    }
   }
 }

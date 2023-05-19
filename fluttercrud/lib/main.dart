@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Django-Flutter',
         initialRoute: LoginScreen.routeName,
         routes: {
