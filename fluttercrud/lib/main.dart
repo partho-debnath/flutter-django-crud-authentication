@@ -5,6 +5,7 @@ import './providers/task_provider.dart';
 
 import './screens/login_screen.dart';
 import './screens/list_screen.dart';
+import './screens/registration_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,10 +25,11 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Django-Flutter',
-        initialRoute: LoginScreen.routeName,
+        initialRoute: RegistrationScreen.routeName,
         routes: {
           LoginScreen.routeName: (cntxt) => const LoginScreen(),
           ListScreen.routeName: (cntxt) => const ListScreen(),
+          RegistrationScreen.routeName: (cntxt) => const RegistrationScreen(),
         },
       ),
     );
