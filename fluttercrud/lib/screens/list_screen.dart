@@ -48,52 +48,80 @@ class ListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final TaskProvider userTaskProvider = Provider.of<TaskProvider>(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Your Tasks'),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.add),
-          ),
-          PopupMenuButton<SelectedOptions>(
-            onSelected: (SelectedOptions selectedOptions) {
-              switch (selectedOptions) {
-                case SelectedOptions.logout:
-                  showLogoutDialog(context).then((value) {
-                    if (value == true) {
-                      userTaskProvider.logout();
-                      Navigator.of(context)
-                          .pushReplacementNamed(LoginScreen.routeName);
-                    }
-                  });
-              }
-            },
-            itemBuilder: (cntxt) {
-              return [
-                const PopupMenuItem<SelectedOptions>(
-                  value: SelectedOptions.logout,
-                  child: Text('Logout'),
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Your Tasks'),
+          actions: [
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.add),
+            ),
+            PopupMenuButton<SelectedOptions>(
+              onSelected: (SelectedOptions selectedOptions) {
+                switch (selectedOptions) {
+                  case SelectedOptions.logout:
+                    showLogoutDialog(context).then((value) {
+                      if (value == true) {
+                        userTaskProvider.logout();
+                        Navigator.of(context)
+                            .pushReplacementNamed(LoginScreen.routeName);
+                      }
+                    });
+                }
+              },
+              itemBuilder: (cntxt) {
+                return [
+                  const PopupMenuItem<SelectedOptions>(
+                    value: SelectedOptions.logout,
+                    child: Text('Logout'),
+                  ),
+                ];
+              },
+              child: const Icon(Icons.more_vert),
+            ),
+          ],
+          bottom: const TabBar(
+            tabs: [
+              Tab(
+                text: 'Task List',
+                icon: Icon(Icons.list),
+              ),
+              Tab(
+                text: 'Favorite Task',
+                icon: Icon(
+                  Icons.favorite_border,
+                  color: Colors.red,
                 ),
-              ];
-            },
-            child: const Icon(Icons.more_vert),
+              ),
+              Tab(
+                text: 'Completed Task',
+                icon: Icon(Icons.done),
+              ),
+            ],
           ),
-        ],
-      ),
-      body: RefreshIndicator(
-        onRefresh: () {
-          return userTaskProvider.fetchTask();
-        },
-        child: ListView.builder(
-            padding: const EdgeInsets.symmetric(vertical: 5),
-            itemCount: userTaskProvider.tasks.length,
-            itemBuilder: (cntxt, index) {
-              return ChangeNotifierProvider.value(
-                value: userTaskProvider.tasks[index],
-                child: const TaskItem(),
-              );
-            }),
+        ),
+        body: TabBarView(
+          children: [
+            RefreshIndicator(
+              onRefresh: () {
+                return userTaskProvider.fetchTask();
+              },
+              child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  itemCount: userTaskProvider.tasks.length,
+                  itemBuilder: (cntxt, index) {
+                    return ChangeNotifierProvider.value(
+                      value: userTaskProvider.tasks[index],
+                      child: const TaskItem(),
+                    );
+                  }),
+            ),
+            const Center(child: Text('Favorite')),
+            const Center(child: Text('Completed'))
+          ],
+        ),
       ),
     );
   }

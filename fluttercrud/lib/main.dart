@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Django-Flutter',
-        initialRoute: RegistrationScreen.routeName,
+        initialRoute: LoginScreen.routeName,
         routes: {
           LoginScreen.routeName: (cntxt) => const LoginScreen(),
           ListScreen.routeName: (cntxt) => const ListScreen(),
