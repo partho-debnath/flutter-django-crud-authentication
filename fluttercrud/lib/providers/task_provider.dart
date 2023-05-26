@@ -17,6 +17,14 @@ class TaskProvider with ChangeNotifier {
     return _tasks;
   }
 
+  List<Task> get favoriteTask {
+    return _tasks.where((task) => task.isfavorite == true).toList();
+  }
+
+  List<Task> get completedTask {
+    return _tasks.where((task) => task.iscomplete == true).toList();
+  }
+
   void logout() {
     _user = null;
   }

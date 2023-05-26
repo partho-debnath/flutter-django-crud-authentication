@@ -5,6 +5,8 @@ import '../providers/task_provider.dart';
 
 import '../widgets/task_item.dart';
 import './login_screen.dart';
+import './favorite_screen.dart';
+import './complete_screen.dart';
 
 enum SelectedOptions { logout }
 
@@ -118,8 +120,8 @@ class ListScreen extends StatelessWidget {
                     );
                   }),
             ),
-            const Center(child: Text('Favorite')),
-            const Center(child: Text('Completed'))
+            const FavoriteScreen(),
+            const CompleteScreen(),
           ],
         ),
       ),
