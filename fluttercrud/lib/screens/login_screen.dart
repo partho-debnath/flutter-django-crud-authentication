@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './list_screen.dart';
+import './home_screen.dart';
 
 import '../providers/task_provider.dart';
 import './registration_screen.dart';
@@ -47,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
       } else {
         _errorMessage = null;
         Provider.of<TaskProvider>(context, listen: false).fetchTask();
-        Navigator.of(context).pushReplacementNamed(ListScreen.routeName);
+        Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
       }
     });
   }

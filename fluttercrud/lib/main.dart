@@ -4,8 +4,8 @@ import 'package:provider/provider.dart';
 import './providers/task_provider.dart';
 
 import './screens/login_screen.dart';
-import './screens/list_screen.dart';
 import './screens/registration_screen.dart';
+import './screens/home_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,10 +25,40 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Django-Flutter',
+        theme: ThemeData(
+          useMaterial3: true,
+          colorScheme: const ColorScheme.dark(),
+          inputDecorationTheme: const InputDecorationTheme(
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                width: 1,
+                color: Colors.white,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                width: 1,
+                color: Colors.white,
+              ),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                width: 1,
+                color: Colors.white,
+              ),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                width: 1,
+                color: Colors.red,
+              ),
+            ),
+          ),
+        ),
         initialRoute: LoginScreen.routeName,
         routes: {
           LoginScreen.routeName: (cntxt) => const LoginScreen(),
-          ListScreen.routeName: (cntxt) => const ListScreen(),
+          HomeScreen.routeName: (cntxt) => const HomeScreen(),
           RegistrationScreen.routeName: (cntxt) => const RegistrationScreen(),
         },
       ),

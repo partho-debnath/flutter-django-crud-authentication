@@ -14,26 +14,38 @@ class FavoriteScreen extends StatelessWidget {
     final TaskProvider taskProvider =
         Provider.of<TaskProvider>(context, listen: false);
     final List<Task> favoriteTask = taskProvider.favoriteTask;
-    return ListView.builder(
-      itemCount: favoriteTask.length,
-      itemBuilder: (cntxt, index) {
-        return Column(
-          children: [
-            ListTile(
-              title: Text(favoriteTask[index].task),
-              subtitle: Text(DateFormat.yMMMMEEEEd()
-                  .format(DateTime.parse(favoriteTask[index].created))),
-              trailing: const Icon(
-                Icons.favorite,
-                color: Colors.red,
+    if (favoriteTask.isEmpty == true) {
+      return const Center(
+        child: Text(
+          'There is no any favorite task added yet.',
+          style: TextStyle(
+            fontSize: 20,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      );
+    } else {
+      return ListView.builder(
+        itemCount: favoriteTask.length,
+        itemBuilder: (cntxt, index) {
+          return Column(
+            children: [
+              ListTile(
+                title: Text(favoriteTask[index].task),
+                subtitle: Text(DateFormat.yMMMMEEEEd()
+                    .format(DateTime.parse(favoriteTask[index].created))),
+                trailing: const Icon(
+                  Icons.favorite,
+                  color: Colors.red,
+                ),
               ),
-            ),
-            const Divider(
-              color: Colors.grey,
-            )
-          ],
-        );
-      },
-    );
+              const Divider(
+                color: Colors.grey,
+              )
+            ],
+          );
+        },
+      );
+    }
   }
 }

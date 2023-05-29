@@ -239,6 +239,7 @@ class TaskProvider with ChangeNotifier {
   void deleteTaskFromList(int id) {
     tasks.removeWhere((item) => item.id == id);
     deleteTask(id);
+    notifyListeners();
   }
 
   Future<void> deleteTask(int id) async {
