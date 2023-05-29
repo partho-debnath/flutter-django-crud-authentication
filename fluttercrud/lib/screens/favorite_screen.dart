@@ -31,7 +31,7 @@ class FavoriteScreen extends StatelessWidget {
           return Column(
             children: [
               ListTile(
-                title: Text(favoriteTask[index].task),
+                title: Text(favoriteTask[index].getTaskAsTitle),
                 subtitle: Text(DateFormat.yMMMMEEEEd()
                     .format(DateTime.parse(favoriteTask[index].created))),
                 trailing: const Icon(

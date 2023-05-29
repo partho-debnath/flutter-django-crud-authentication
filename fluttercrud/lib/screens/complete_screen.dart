@@ -36,7 +36,7 @@ class CompleteScreen extends StatelessWidget {
                   Icons.done,
                   color: Colors.green,
                 ),
-                title: Text(completedTask[index].task),
+                title: Text(completedTask[index].getTaskAsTitle),
                 subtitle: Text(DateFormat.yMMMMEEEEd()
                     .format(DateTime.parse(completedTask[index].updated))),
               ),

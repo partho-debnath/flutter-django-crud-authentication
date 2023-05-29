@@ -72,7 +72,7 @@ class TaskItem extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
         elevation: 5,
         child: ListTile(
-          title: Text(task.task),
+          title: Text(task.getTaskAsTitle),
           subtitle: Text(
               DateFormat.yMMMMEEEEd().format(DateTime.parse(task.created))),
           leading: Consumer<Task>(

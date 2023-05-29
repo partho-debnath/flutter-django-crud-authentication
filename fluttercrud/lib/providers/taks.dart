@@ -26,4 +26,9 @@ class Task with ChangeNotifier {
     isfavorite = !isfavorite;
     notifyListeners();
   }
+
+  String get getTaskAsTitle {
+    final int length = task.length > 25 ? 25 : task.length;
+    return '${task.substring(0, length)}....';
+  }
 }
