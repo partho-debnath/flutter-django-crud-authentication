@@ -25,7 +25,14 @@ class TaskItem extends StatelessWidget {
         ),
         padding: const EdgeInsets.only(right: 20),
         alignment: Alignment.centerRight,
-        child: const Icon(Icons.delete),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            Text('Delete'),
+            SizedBox(width: 20),
+            Icon(Icons.delete),
+          ],
+        ),
       ),
       direction: DismissDirection.endToStart,
       onDismissed: (direction) {

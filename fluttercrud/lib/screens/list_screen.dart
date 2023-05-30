@@ -19,15 +19,22 @@ class ListScreen extends StatelessWidget {
       onRefresh: () {
         return userTaskProvider.fetchTask();
       },
-      child: ListView.builder(
-          padding: const EdgeInsets.symmetric(vertical: 5),
-          itemCount: userTaskProvider.tasks.length,
-          itemBuilder: (cntxt, index) {
-            return ChangeNotifierProvider.value(
-              value: userTaskProvider.tasks[index],
-              child: const TaskItem(),
-            );
-          }),
+      child: userTaskProvider.tasks.isEmpty == true
+          ? const Center(
+              child: Text(
+                'No task added yet.',
+                style: TextStyle(fontSize: 20),
+              ),
+            )
+          : ListView.builder(
+              padding: const EdgeInsets.symmetric(vertical: 5),
+              itemCount: userTaskProvider.tasks.length,
+              itemBuilder: (cntxt, index) {
+                return ChangeNotifierProvider.value(
+                  value: userTaskProvider.tasks[index],
+                  child: const TaskItem(),
+                );
+              }),
     );
   }
 }

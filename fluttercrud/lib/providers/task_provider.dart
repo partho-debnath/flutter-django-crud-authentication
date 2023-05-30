@@ -8,7 +8,8 @@ import './taks.dart';
 import './user.dart';
 
 class TaskProvider with ChangeNotifier {
-  static const String domain = 'http://10.0.2.2:8000/';
+  static const String domain =
+      'https://filesharingbd.pythonanywhere.com/task-manager-api/';
 
   List<Task> _tasks = [];
   User? _user;
@@ -27,6 +28,7 @@ class TaskProvider with ChangeNotifier {
 
   void logout() {
     _user = null;
+    _tasks.clear();
   }
 
   Future<String?> loginUser(String email, String password) async {
