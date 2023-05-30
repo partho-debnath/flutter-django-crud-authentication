@@ -17,7 +17,7 @@ class FavoriteScreen extends StatelessWidget {
     if (favoriteTask.isEmpty == true) {
       return const Center(
         child: Text(
-          'There is no any favorite task added yet.',
+          'No favorite task added yet.',
           style: TextStyle(
             fontSize: 20,
           ),

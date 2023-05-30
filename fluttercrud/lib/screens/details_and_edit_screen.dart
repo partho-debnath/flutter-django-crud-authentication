@@ -54,7 +54,7 @@ class _TaskDetailAndEditScreenState extends State<TaskDetailAndEditScreen> {
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
         child: TextField(
           controller: _taskController,
-          maxLines: 8,
+          maxLines: 20,
           keyboardType: TextInputType.multiline,
           decoration: InputDecoration(
             prefixIcon: IconButton(

@@ -18,11 +18,11 @@ class TaskProvider with ChangeNotifier {
   }
 
   List<Task> get favoriteTask {
-    return _tasks.where((task) => task.isfavorite == true).toList();
+    return tasks.where((task) => task.isfavorite == true).toList();
   }
 
   List<Task> get completedTask {
-    return _tasks.where((task) => task.iscomplete == true).toList();
+    return tasks.where((task) => task.iscomplete == true).toList();
   }
 
   void logout() {
@@ -252,6 +252,39 @@ class TaskProvider with ChangeNotifier {
           'Authorization': 'TOKEN ${_user!.getToken()}',
         },
       );
+    } catch (error) {
+      throw error.toString();
+    }
+  }
+
+  Future<void> addNewTask(String task, bool complete, bool favorite) async {
+    Map<String, dynamic> userTask = {
+      'task': task,
+      'iscomplete': complete,
+      'isfavorite': favorite,
+    };
+
+    try {
+      var url = Uri.parse('${domain}create-user-task/');
+      var response = await http.post(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'TOKEN ${_user!.getToken()}',
+        },
+        body: json.encode(userTask),
+      );
+      Map<String, dynamic> userNewTask = json.decode(response.body);
+      Task newTask = Task(
+        id: userNewTask['id'],
+        task: userNewTask['task'],
+        iscomplete: userNewTask['iscomplete'],
+        isfavorite: userNewTask['isfavorite'],
+        created: userNewTask['created'],
+        updated: userNewTask['updated'],
+      );
+      _tasks.insert(0, newTask);
+      notifyListeners();
     } catch (error) {
       throw error.toString();
     }

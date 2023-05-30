@@ -7,6 +7,7 @@ import './list_screen.dart';
 import './login_screen.dart';
 import './favorite_screen.dart';
 import './complete_screen.dart';
+import './add_task_screen.dart';
 
 enum SelectedOptions { logout }
 
@@ -21,7 +22,7 @@ class HomeScreen extends StatelessWidget {
         return AlertDialog(
           icon: const Icon(Icons.logout),
           title: const Text('Are you sure?'),
-          content: const Text('Are you want to logout?'),
+          content: const Text('Do you want to logout?'),
           actions: [
             TextButton(
               onPressed: () {
@@ -46,6 +47,10 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  void startAddTaskScreen(BuildContext context) {
+    Navigator.of(context).pushNamed(AddTaskScreen.routeName);
+  }
+
   @override
   Widget build(BuildContext context) {
     final TaskProvider userTaskProvider = Provider.of<TaskProvider>(context);
@@ -57,7 +62,9 @@ class HomeScreen extends StatelessWidget {
           title: const Text('Your Tasks'),
           actions: [
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                startAddTaskScreen(context);
+              },
               icon: const Icon(Icons.add),
             ),
             PopupMenuButton<SelectedOptions>(

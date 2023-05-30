@@ -42,7 +42,7 @@ class TaskItem extends StatelessWidget {
                 iconColor: Colors.red,
                 title: const Text('Are you Confirm?'),
                 content: const Text(
-                  'You want to delete this task?',
+                  'Do you want to delete this task?',
                 ),
                 alignment: Alignment.center,
                 actionsAlignment: MainAxisAlignment.spaceAround,
