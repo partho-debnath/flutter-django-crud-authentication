@@ -70,26 +70,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     });
   }
 
-  Widget buildButton(String buttonText, VoidCallback onSubmit) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.93,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          shadowColor: Colors.blue,
-          elevation: 15,
-          padding: const EdgeInsets.symmetric(vertical: 8),
-        ),
-        onPressed: onSubmit,
-        child: Text(
-          buttonText,
-          style: const TextStyle(
-            fontSize: 20,
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -232,15 +212,36 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 ),
               ),
               const SizedBox(height: 15),
-              buildButton('Registration', () {
+              buildButton('Sign Up', () {
                 submitForm();
               }),
-              const SizedBox(height: 10),
-              buildButton('Login', () {
+              const SizedBox(height: 15),
+              buildButton('Sign in', () {
                 Navigator.of(context)
                     .pushReplacementNamed(LoginScreen.routeName);
               })
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildButton(String buttonText, VoidCallback onSubmit) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.93,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          shadowColor: Colors.deepPurple,
+          elevation: 7,
+          padding: const EdgeInsets.symmetric(vertical: 8),
+        ),
+        onPressed: onSubmit,
+        child: Text(
+          buttonText,
+          style: const TextStyle(
+            fontSize: 20,
+            color: Colors.white,
           ),
         ),
       ),

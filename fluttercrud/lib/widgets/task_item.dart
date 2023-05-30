@@ -40,7 +40,7 @@ class TaskItem extends StatelessWidget {
               return AlertDialog(
                 icon: const Icon(Icons.delete_forever),
                 iconColor: Colors.red,
-                title: const Text('Are you Confirm?'),
+                title: const Text('Are you sure?'),
                 content: const Text(
                   'Do you want to delete this task?',
                 ),

@@ -32,7 +32,6 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_isValid() == false) {
       return;
     }
-
     _form.currentState!.save();
 
     TaskProvider userProvider =
@@ -50,26 +49,6 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
       }
     });
-  }
-
-  Widget buildButton(String buttonText, VoidCallback onSubmit) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.93,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          shadowColor: Colors.blue,
-          elevation: 15,
-          padding: const EdgeInsets.symmetric(vertical: 8),
-        ),
-        onPressed: onSubmit,
-        child: Text(
-          buttonText,
-          style: const TextStyle(
-            fontSize: 20,
-          ),
-        ),
-      ),
-    );
   }
 
   @override
@@ -142,15 +121,36 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(height: 15),
-              buildButton('Login', () {
+              buildButton('Sign in', () {
                 submitForm();
               }),
-              const SizedBox(height: 10),
-              buildButton('Registration', () {
+              const SizedBox(height: 15),
+              buildButton('Create new account', () {
                 Navigator.of(context)
                     .pushReplacementNamed(RegistrationScreen.routeName);
               }),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildButton(String buttonText, VoidCallback onSubmit) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.93,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          shadowColor: Colors.deepPurple,
+          elevation: 5,
+          padding: const EdgeInsets.symmetric(vertical: 8),
+        ),
+        onPressed: onSubmit,
+        child: Text(
+          buttonText,
+          style: const TextStyle(
+            fontSize: 20,
+            color: Colors.white,
           ),
         ),
       ),

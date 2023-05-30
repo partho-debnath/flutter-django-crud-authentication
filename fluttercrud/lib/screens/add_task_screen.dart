@@ -148,8 +148,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       context: context,
       builder: (cntxt) {
         return AlertDialog(
-          title: const Text('Title'),
-          content: const Text('Content'),
+          title: const Text('Are you sure?'),
+          content: const Text('Do you want to close this without saving?'),
           actions: [
             TextButton(
               onPressed: () {
@@ -161,7 +161,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               onPressed: () {
                 Navigator.of(cntxt).pop(true);
               },
-              child: const Text('Yes'),
+              child: const Text(
+                'Yes',
+                style: TextStyle(color: Colors.red),
+              ),
             ),
           ],
         );
