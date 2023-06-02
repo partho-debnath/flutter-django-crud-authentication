@@ -33,6 +33,11 @@
 - ## Add New Task Screen
 <img src="https://github.com/pd28CSE/flutter-django-crud-authentication/assets/71305747/23a0bda6-616e-4fb3-8f19-dccf473e49a4" width="50%" height="50%"><hr>
 
+
+- ## Delete a Task
+<img src="https://github.com/pd28CSE/flutter-django-crud-authentication/assets/71305747/247095d2-3dd2-49cf-88a2-0927414f3ee4" width="50%" height="50%"><hr>
+
+
 - ## Show warning, if exiting without saving a task
 <img src="https://github.com/pd28CSE/flutter-django-crud-authentication/assets/71305747/7c81c4b3-5dbe-4c93-912b-bcea11d704e0" width="50%" height="50%"><hr>
 
