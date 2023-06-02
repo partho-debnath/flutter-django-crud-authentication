@@ -1,5 +1,10 @@
-# Django Restframework
-## Connect to Flutter app
+# Django Restframework and Flutter
+
+## Flutter Version
+- Flutter version 3.7.3 on channel stable
+- Dart version 2.19.2
+- DevTools version 2.20.1
+
 
 # User Interface
 
