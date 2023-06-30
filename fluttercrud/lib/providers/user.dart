@@ -85,13 +85,15 @@ class User with ChangeNotifier {
       Map<String, dynamic> responseBody = json.decode(response.body);
       if (responseBody.containsKey('username') == true &&
           responseBody['username'] != email) {
-        throw Exception(responseBody['username'][0]);
+        throw HttpException(responseBody['username'][0]);
       } else if (responseBody.containsKey('email') == true &&
           responseBody['email'] != email) {
-        throw Exception(responseBody['email'][0]);
+        throw HttpException(responseBody['email'][0]);
       } else if (responseBody.containsKey('error') == true) {
-        throw Exception(responseBody['error']);
+        throw HttpException(responseBody['error']);
       }
+    } on HttpException catch (error) {
+      throw HttpException(error.toString());
     } catch (error) {
       /// throw ERROR, when any errors occurs.
       throw error.toString();

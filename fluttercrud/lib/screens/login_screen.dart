@@ -40,7 +40,6 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       await user.loginUser(_username as String, _password!.trim());
     } on HttpException catch (error) {
-      print('Error ----- $error');
       if (error
           .toString()
           .contains('Unable to log in with provided credentials')) {
@@ -55,36 +54,28 @@ class _LoginScreenState extends State<LoginScreen> {
         setState(() {});
       }
     } catch (error) {
-      showDialog(
-        context: context,
-        builder: (cntxt) {
-          return AlertDialog(
-            title: const Text('Internal Error'),
-            content: Text(error.toString()),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Close'),
-              ),
-            ],
-          );
-        },
-      );
+      _showAlertDialog(error.toString());
     }
+  }
 
-    // responce.then((value) {
-    //   if (value != null) {
-    //     setState(() {
-    //       _errorMessage = value;
-    //     });
-    //   } else {
-    //     _errorMessage = null;
-    //     Provider.of<TaskProvider>(context, listen: false).fetchTask();
-    //     Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
-    //   }
-    // });
+  Future<bool?> _showAlertDialog(String error) {
+    return showDialog<bool?>(
+      context: context,
+      builder: (cntxt) {
+        return AlertDialog(
+          title: const Text('Internal Error!'),
+          content: Text(error),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -140,9 +131,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       keyboardType: TextInputType.text,
                       textInputAction: TextInputAction.done,
+                      maxLength: 20,
                       validator: (value) {
                         if (value == null || value.isEmpty == true) {
                           return 'Enter your Password';
+                        } else if (value.length < 8) {
+                          return 'Password must be at least 8 characters.';
                         }
                         return null;
                       },

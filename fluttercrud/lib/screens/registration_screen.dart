@@ -1,11 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/task_provider.dart';
 import '../providers/user.dart';
-import './list_screen.dart';
+import '../utils/http_exception.dart';
 import './login_screen.dart';
 
 class RegistrationScreen extends StatefulWidget {
@@ -21,10 +18,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   TextEditingController? _passwordController;
   FocusNode? _confirmPasswordFocusNode;
   bool _passwordVisibilityOff = true;
-  String? _username, _emailErrorMessage;
+  bool _isTimeOut = false;
+  String? _username, _emailErrorMessage, _passwordErrorMessage;
   String? _firstName, _lastName;
   String? _password;
-  String? _errorMessage;
 
   @override
   void initState() {
@@ -41,7 +38,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   }
 
   bool _isValid() {
-    _emailErrorMessage = null;
     if (_form.currentState!.validate() == false) {
       return false;
     }
@@ -59,30 +55,58 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     try {
       await userProvider.createNewUser(_firstName.toString(),
           _lastName.toString(), _username as String, _password!.trim());
-      print('ok------------');
-    } catch (error) {
-      print(' Error is ==== $error');
+
+      _emailErrorMessage = null;
+      _passwordErrorMessage = null;
+      _isTimeOut = false;
+      setState(() {});
+      _showSuccessMessage();
+    } on HttpException catch (error) {
       if (error.toString().contains('username already exists')) {
         setState(() {
           _emailErrorMessage = error.toString();
         });
+      } else if (error.toString().contains('Request TimeOut')) {
+        _emailErrorMessage = null;
+        _passwordErrorMessage = null;
+        _isTimeOut = true;
+        setState(() {});
       }
+    } catch (error) {
+      _emailErrorMessage = null;
+      _passwordErrorMessage = null;
+      _isTimeOut = false;
+      setState(() {});
+      _showAlertDialog(error.toString());
     }
+  }
 
-    // responce.then((value) {
-    //   if (value != null) {
-    //     ScaffoldMessenger.of(context).clearSnackBars();
-    //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    //       content: Text(value),
-    //       duration: const Duration(seconds: 5),
-    //     ));
-    //   } else {
-    //     _errorMessage = null;
-    //     Provider.of<TaskProvider>(context, listen: false).fetchTask();
+  void _showSuccessMessage() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Account Create Successful. Now you can login.'),
+      ),
+    );
+  }
 
-    //     Navigator.of(context).pushReplacementNamed(ListScreen.routeName);
-    //   }
-    // });
+  Future<bool?> _showAlertDialog(String error) {
+    return showDialog<bool?>(
+      context: context,
+      builder: (cntxt) {
+        return AlertDialog(
+          title: const Text('Internal Error!'),
+          content: Text(error),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -171,7 +195,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               ? Icons.visibility
                               : Icons.visibility_off),
                         ),
-                        errorText: _errorMessage,
+                        errorText: _passwordErrorMessage,
                       ),
                       keyboardType: TextInputType.text,
                       textInputAction: TextInputAction.next,
@@ -203,7 +227,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               ? Icons.visibility
                               : Icons.visibility_off),
                         ),
-                        errorText: _errorMessage,
+                        errorText: _passwordErrorMessage,
                       ),
                       keyboardType: TextInputType.text,
                       textInputAction: TextInputAction.done,
@@ -226,6 +250,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   ],
                 ),
               ),
+              const SizedBox(height: 15),
+              if (_isTimeOut)
+                const Text(
+                  'Request TimeOut, try again later.',
+                  style: TextStyle(color: Colors.red),
+                ),
               const SizedBox(height: 15),
               buildButton('Sign Up', () {
                 submitForm();
