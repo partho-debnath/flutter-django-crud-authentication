@@ -43,8 +43,12 @@ class _TaskDetailAndEditScreenState extends State<TaskDetailAndEditScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              selectedTask.task = _taskController!.text.trim();
-              taskProvider.updateTask(selectedTask.id);
+              taskProvider.updateTask(
+                selectedTask.id,
+                _taskController!.text.trim(),
+                iscomplete as bool,
+                isfavorite as bool,
+              );
             },
             icon: const Icon(Icons.save),
           ),
@@ -61,7 +65,7 @@ class _TaskDetailAndEditScreenState extends State<TaskDetailAndEditScreen> {
               onPressed: () {
                 setState(() {
                   isfavorite = !(isfavorite as bool);
-                  selectedTask.togolFavoriteTask();
+                  // selectedTask.togolFavoriteTask();
                 });
               },
               icon: Icon(
@@ -77,7 +81,7 @@ class _TaskDetailAndEditScreenState extends State<TaskDetailAndEditScreen> {
               onChanged: (value) {
                 setState(() {
                   iscomplete = !(iscomplete as bool);
-                  selectedTask.togolCompleteTask();
+                  // selectedTask.togolCompleteTask();
                 });
               },
             ),

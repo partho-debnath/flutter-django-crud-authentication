@@ -135,15 +135,16 @@ class TaskProvider with ChangeNotifier {
     }
   }
 
-  Future<void> updateTask(int id) async {
+  Future<void> updateTask(
+      int id, String text, bool iscomplete, bool isfavorite) async {
     Task existingTask = getTaskById(id);
     try {
       var url = Uri.parse('${domain}task-list/$id/update-task/');
       Map<String, dynamic> task = {
         'id': existingTask.id,
-        'task': existingTask.task,
-        'iscomplete': existingTask.iscomplete,
-        'isfavorite': existingTask.isfavorite,
+        'task': text,
+        'iscomplete': iscomplete,
+        'isfavorite': isfavorite,
       };
 
       await http.put(
