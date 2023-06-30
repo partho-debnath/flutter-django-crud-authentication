@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import './providers/user.dart';
 import './providers/task_provider.dart';
 
 import './screens/login_screen.dart';
@@ -20,48 +21,61 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) => TaskProvider(),
+          create: (cntxt) => User(),
         ),
-      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Django-Flutter',
-        theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: const ColorScheme.dark(),
-          inputDecorationTheme: const InputDecorationTheme(
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                width: 1,
-                color: Colors.white,
-              ),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                width: 1,
-                color: Colors.white,
-              ),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                width: 1,
-                color: Colors.white,
-              ),
-            ),
-            focusedErrorBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                width: 1,
-                color: Colors.red,
-              ),
-            ),
+        ChangeNotifierProxyProvider<User, TaskProvider>(
+          create: (cntxt) => TaskProvider(email: null, token: null, tasks: []),
+          update: (cntxt, userData, previousTaks) => TaskProvider(
+            email: userData.getEmail(),
+            token: userData.getToken(),
+            tasks: previousTaks != null ? previousTaks.tasks : [],
           ),
         ),
-        initialRoute: LoginScreen.routeName,
-        routes: {
-          LoginScreen.routeName: (cntxt) => const LoginScreen(),
-          HomeScreen.routeName: (cntxt) => const HomeScreen(),
-          RegistrationScreen.routeName: (cntxt) => const RegistrationScreen(),
-          AddTaskScreen.routeName: (cntxt) => const AddTaskScreen(),
+      ],
+      child: Consumer<User>(
+        builder: (cnntxt, user, child) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Django-Flutter',
+            theme: ThemeData(
+              useMaterial3: true,
+              colorScheme: const ColorScheme.dark(),
+              inputDecorationTheme: const InputDecorationTheme(
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    width: 1,
+                    color: Colors.white,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    width: 1,
+                    color: Colors.white,
+                  ),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    width: 1,
+                    color: Colors.white,
+                  ),
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    width: 1,
+                    color: Colors.red,
+                  ),
+                ),
+              ),
+            ),
+            home: user.token == null ? const LoginScreen() : const HomeScreen(),
+            routes: {
+              HomeScreen.routeName: (cntxt) => const HomeScreen(),
+              LoginScreen.routeName: (cntxt) => const LoginScreen(),
+              RegistrationScreen.routeName: (cntxt) =>
+                  const RegistrationScreen(),
+              AddTaskScreen.routeName: (cntxt) => const AddTaskScreen(),
+            },
+          );
         },
       ),
     );

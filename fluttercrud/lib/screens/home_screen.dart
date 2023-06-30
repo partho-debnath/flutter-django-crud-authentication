@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/task_provider.dart';
+import '../providers/user.dart';
 
 import './list_screen.dart';
-import './login_screen.dart';
 import './favorite_screen.dart';
 import './complete_screen.dart';
 import './add_task_screen.dart';
@@ -73,9 +73,8 @@ class HomeScreen extends StatelessWidget {
                   case SelectedOptions.logout:
                     showLogoutDialog(context).then((value) {
                       if (value == true) {
-                        userTaskProvider.logout();
-                        Navigator.of(context)
-                            .pushReplacementNamed(LoginScreen.routeName);
+                        userTaskProvider.clear();
+                        Provider.of<User>(context, listen: false).logout();
                       }
                     });
                 }
@@ -115,12 +114,15 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
         ),
-        body: const TabBarView(
-          children: [
-            ListScreen(),
-            FavoriteScreen(),
-            CompleteScreen(),
-          ],
+        body: FutureBuilder(
+          future: userTaskProvider.fetchTask(),
+          builder: (cntxt, spanshot) => const TabBarView(
+            children: [
+              ListScreen(),
+              FavoriteScreen(),
+              CompleteScreen(),
+            ],
+          ),
         ),
       ),
     );

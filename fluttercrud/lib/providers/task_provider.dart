@@ -5,14 +5,22 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import './taks.dart';
-import './user.dart';
 
 class TaskProvider with ChangeNotifier {
   static const String domain =
       'https://filesharingbd.pythonanywhere.com/task-manager-api/';
 
   List<Task> _tasks = [];
-  User? _user;
+  String? email;
+  String? token;
+
+  TaskProvider({
+    required this.email,
+    required this.token,
+    required List<Task> tasks,
+  }) {
+    _tasks = tasks;
+  }
 
   List<Task> get tasks {
     return _tasks;
@@ -26,93 +34,8 @@ class TaskProvider with ChangeNotifier {
     return tasks.where((task) => task.iscomplete == true).toList();
   }
 
-  void logout() {
-    _user = null;
+  void clear() {
     _tasks.clear();
-  }
-
-  Future<String?> loginUser(String email, String password) async {
-    Map<String, String> user = {'username': email, 'password': password};
-
-    try {
-      var url = Uri.parse('${domain}api-token-auth/');
-      final response = await http
-          .post(
-        url,
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: json.encode(user),
-      )
-          .timeout(
-        const Duration(seconds: 5),
-        onTimeout: () {
-          return http.Response('{"error": "Request Time Out Error"}', 408);
-        },
-      );
-      Map<String, dynamic> responseBody = json.decode(response.body);
-
-      if (responseBody.containsKey('token') == true) {
-        /// Create the user 'emain & token ID', when the user login successfully
-        _user = User(email: email, token: responseBody['token']);
-      } else if (responseBody.containsKey('error') == true) {
-        return 'Request TimeOutError';
-      } else {
-        ///  Return error, when the user provide wrong email and password
-        return 'Email or password is incorrect.';
-      }
-    } catch (error) {
-      /// throw ERROR, when any errors occurs.
-      throw error.toString();
-    }
-
-    ///  Return null, when the user login successfully
-    return null;
-  }
-
-  Future<String?> createNewUser(
-      String firstName, String lastName, String email, String password) async {
-    Map<String, String> user = {
-      'first_name': firstName,
-      'last_name': lastName,
-      'email': email,
-      'username': email,
-      'password': password,
-    };
-
-    try {
-      var url = Uri.parse('${domain}create-user/');
-      final response = await http
-          .post(
-        url,
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: json.encode(user),
-      )
-          .timeout(
-        const Duration(seconds: 5),
-        onTimeout: () {
-          return http.Response('{"error": "Request Time Out Error"}', 408);
-        },
-      );
-      Map<String, dynamic> responseBody = json.decode(response.body);
-
-      if (responseBody.containsKey('token') == true) {
-        /// Create the user 'emain & token ID', when the user login successfully
-        // _user = User(email: email, token: responseBody['token']);
-      } else if (responseBody.containsKey('error') == true) {
-        return 'Request TimeOutError';
-      } else if (responseBody.containsKey('first_name') == false) {
-        return 'The E-mail: $email already been used.';
-      }
-    } catch (error) {
-      /// throw ERROR, when any errors occurs.
-      throw error.toString();
-    }
-
-    ///  Return this message, when account created successfully
-    return '$firstName $lastName your account is creates successfully. Now you can login.';
   }
 
   Future<void> fetchTask() async {
@@ -123,7 +46,7 @@ class TaskProvider with ChangeNotifier {
         url,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          'Authorization': 'TOKEN ${_user!.getToken()}',
+          'Authorization': 'TOKEN $token',
         },
       );
 
@@ -161,7 +84,7 @@ class TaskProvider with ChangeNotifier {
         url,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          'Authorization': 'TOKEN ${_user!.getToken()}',
+          'Authorization': 'TOKEN $token',
         },
         body: json.encode(task),
       );
@@ -182,7 +105,7 @@ class TaskProvider with ChangeNotifier {
         url,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          'Authorization': 'TOKEN ${_user!.getToken()}',
+          'Authorization': 'TOKEN $token',
         },
         body: json.encode(task),
       );
@@ -203,7 +126,7 @@ class TaskProvider with ChangeNotifier {
         url,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          'Authorization': 'TOKEN ${_user!.getToken()}',
+          'Authorization': 'TOKEN $token',
         },
         body: json.encode(task),
       );
@@ -227,7 +150,7 @@ class TaskProvider with ChangeNotifier {
         url,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          'Authorization': 'TOKEN ${_user!.getToken()}',
+          'Authorization': 'TOKEN $token',
         },
         body: json.encode(task),
       );
@@ -251,7 +174,7 @@ class TaskProvider with ChangeNotifier {
         url,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          'Authorization': 'TOKEN ${_user!.getToken()}',
+          'Authorization': 'TOKEN $token',
         },
       );
     } catch (error) {
@@ -272,7 +195,7 @@ class TaskProvider with ChangeNotifier {
         url,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          'Authorization': 'TOKEN ${_user!.getToken()}',
+          'Authorization': 'TOKEN $token',
         },
         body: json.encode(userTask),
       );

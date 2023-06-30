@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './home_screen.dart';
+import '../providers/user.dart';
 
-import '../providers/task_provider.dart';
+import '../utils/http_exception.dart';
 import './registration_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -15,11 +15,12 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  GlobalKey<FormState> _form = GlobalKey<FormState>();
+  final GlobalKey<FormState> _form = GlobalKey<FormState>();
   bool _passwordVisibilityOff = true;
+  bool _isRequestTimeOut = false;
   String? _username;
   String? _password;
-  String? _errorMessage;
+  String? _emalErrorMessage, _passwordErrorMessage;
 
   bool _isValid() {
     if (_form.currentState!.validate() == false) {
@@ -28,27 +29,62 @@ class _LoginScreenState extends State<LoginScreen> {
     return true;
   }
 
-  void submitForm() {
+  Future<void> submitForm() async {
     if (_isValid() == false) {
       return;
     }
     _form.currentState!.save();
 
-    TaskProvider userProvider =
-        Provider.of<TaskProvider>(context, listen: false);
-    var responce =
-        userProvider.loginUser(_username as String, _password!.trim());
-    responce.then((value) {
-      if (value != null) {
-        setState(() {
-          _errorMessage = value;
-        });
-      } else {
-        _errorMessage = null;
-        Provider.of<TaskProvider>(context, listen: false).fetchTask();
-        Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+    User user = Provider.of<User>(context, listen: false);
+
+    try {
+      await user.loginUser(_username as String, _password!.trim());
+    } on HttpException catch (error) {
+      print('Error ----- $error');
+      if (error
+          .toString()
+          .contains('Unable to log in with provided credentials')) {
+        _emalErrorMessage = 'Email or password is invalid.';
+        _passwordErrorMessage = _emalErrorMessage;
+        _isRequestTimeOut = false;
+        setState(() {});
+      } else if (error.toString().contains('Request TimeOut')) {
+        _isRequestTimeOut = true;
+        _emalErrorMessage = null;
+        _passwordErrorMessage = _emalErrorMessage;
+        setState(() {});
       }
-    });
+    } catch (error) {
+      showDialog(
+        context: context,
+        builder: (cntxt) {
+          return AlertDialog(
+            title: const Text('Internal Error'),
+            content: Text(error.toString()),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('Close'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    // responce.then((value) {
+    //   if (value != null) {
+    //     setState(() {
+    //       _errorMessage = value;
+    //     });
+    //   } else {
+    //     _errorMessage = null;
+    //     Provider.of<TaskProvider>(context, listen: false).fetchTask();
+    //     Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+    //   }
+    // });
   }
 
   @override
@@ -69,8 +105,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     TextFormField(
                       decoration: InputDecoration(
                         prefixIcon: const Icon(Icons.email),
-                        labelText: 'Username',
-                        errorText: _errorMessage,
+                        labelText: 'Email',
+                        errorText: _emalErrorMessage,
                       ),
                       keyboardType: TextInputType.emailAddress,
                       textInputAction: TextInputAction.next,
@@ -100,7 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ? Icons.visibility
                               : Icons.visibility_off),
                         ),
-                        errorText: _errorMessage,
+                        errorText: _passwordErrorMessage,
                       ),
                       keyboardType: TextInputType.text,
                       textInputAction: TextInputAction.done,
@@ -120,6 +156,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                 ),
               ),
+              const SizedBox(height: 15),
+              if (_isRequestTimeOut)
+                const Text(
+                  'Request TimeOut, try again later.',
+                  style: TextStyle(color: Colors.red),
+                ),
               const SizedBox(height: 15),
               buildButton('Sign in', () {
                 submitForm();

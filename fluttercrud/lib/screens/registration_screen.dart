@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/task_provider.dart';
+import '../providers/user.dart';
 import './list_screen.dart';
 import './login_screen.dart';
 
@@ -14,11 +17,11 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
-  GlobalKey<FormState> _form = GlobalKey<FormState>();
+  final GlobalKey<FormState> _form = GlobalKey<FormState>();
   TextEditingController? _passwordController;
   FocusNode? _confirmPasswordFocusNode;
   bool _passwordVisibilityOff = true;
-  String? _username;
+  String? _username, _emailErrorMessage;
   String? _firstName, _lastName;
   String? _password;
   String? _errorMessage;
@@ -38,36 +41,48 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   }
 
   bool _isValid() {
+    _emailErrorMessage = null;
     if (_form.currentState!.validate() == false) {
       return false;
     }
     return true;
   }
 
-  void submitForm() {
+  Future<void> submitForm() async {
     if (_isValid() == false) {
       return;
     }
 
     _form.currentState!.save();
-    TaskProvider userProvider =
-        Provider.of<TaskProvider>(context, listen: false);
-    var responce = userProvider.createNewUser(_firstName.toString(),
-        _lastName.toString(), _username as String, _password!.trim());
-    responce.then((value) {
-      if (value != null) {
-        ScaffoldMessenger.of(context).clearSnackBars();
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(value),
-          duration: const Duration(seconds: 5),
-        ));
-      } else {
-        _errorMessage = null;
-        Provider.of<TaskProvider>(context, listen: false).fetchTask();
+    User userProvider = Provider.of<User>(context, listen: false);
 
-        Navigator.of(context).pushReplacementNamed(ListScreen.routeName);
+    try {
+      await userProvider.createNewUser(_firstName.toString(),
+          _lastName.toString(), _username as String, _password!.trim());
+      print('ok------------');
+    } catch (error) {
+      print(' Error is ==== $error');
+      if (error.toString().contains('username already exists')) {
+        setState(() {
+          _emailErrorMessage = error.toString();
+        });
       }
-    });
+    }
+
+    // responce.then((value) {
+    //   if (value != null) {
+    //     ScaffoldMessenger.of(context).clearSnackBars();
+    //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    //       content: Text(value),
+    //       duration: const Duration(seconds: 5),
+    //     ));
+    //   } else {
+    //     _errorMessage = null;
+    //     Provider.of<TaskProvider>(context, listen: false).fetchTask();
+
+    //     Navigator.of(context).pushReplacementNamed(ListScreen.routeName);
+    //   }
+    // });
   }
 
   @override
@@ -124,8 +139,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     TextFormField(
                       decoration: InputDecoration(
                         prefixIcon: const Icon(Icons.email),
-                        labelText: 'Username',
-                        errorText: _errorMessage,
+                        labelText: 'Email',
+                        errorText: _emailErrorMessage,
                       ),
                       keyboardType: TextInputType.emailAddress,
                       textInputAction: TextInputAction.next,
