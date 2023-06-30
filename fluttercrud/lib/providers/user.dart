@@ -47,7 +47,7 @@ class User with ChangeNotifier {
           'email': email,
           'token': token as String,
         };
-        prefs.setString('userAuth', jsonEncode(userAuth));
+        prefs.setString('userAuth', json.encode(userAuth));
       } else if (responseBody.containsKey('non_field_errors') == true) {
         /// Wrong username or password
         throw HttpException(responseBody['non_field_errors'][0]);
@@ -72,8 +72,9 @@ class User with ChangeNotifier {
     if (prefs.containsKey('userAuth') == false) {
       return false;
     } else {
-      final Map<String, String> userAuth =
-          jsonDecode(prefs.getString('userAuth') as String);
+      final Map<String, dynamic> userAuth =
+          json.decode(prefs.getString('userAuth') as String);
+
       token = userAuth['token'];
       email = userAuth['email'];
       notifyListeners();

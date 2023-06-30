@@ -68,20 +68,18 @@ class MyApp extends StatelessWidget {
                 ),
               ),
             ),
-            home: user.token == null
-                ? FutureBuilder(
+            home: user.token != null
+                ? const HomeScreen()
+                : FutureBuilder(
                     future: user.tryAutoLogin(),
                     builder: (cntxt, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const LoadingScreen();
-                      } else if (snapshot.data == false) {
-                        return const LoginScreen();
                       } else {
-                        return const HomeScreen();
+                        return const LoginScreen();
                       }
                     },
-                  )
-                : const HomeScreen(),
+                  ),
             routes: {
               HomeScreen.routeName: (cntxt) => const HomeScreen(),
               LoginScreen.routeName: (cntxt) => const LoginScreen(),

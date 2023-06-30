@@ -116,13 +116,15 @@ class HomeScreen extends StatelessWidget {
         ),
         body: FutureBuilder(
           future: userTaskProvider.fetchTask(),
-          builder: (cntxt, spanshot) => const TabBarView(
-            children: [
-              ListScreen(),
-              FavoriteScreen(),
-              CompleteScreen(),
-            ],
-          ),
+          builder: (cntxt, spanshot) {
+            return const TabBarView(
+              children: [
+                ListScreen(),
+                FavoriteScreen(),
+                CompleteScreen(),
+              ],
+            );
+          },
         ),
       ),
     );
