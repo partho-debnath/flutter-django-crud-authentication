@@ -8,6 +8,7 @@ import './screens/login_screen.dart';
 import './screens/registration_screen.dart';
 import './screens/home_screen.dart';
 import './screens/add_task_screen.dart';
+import './screens/loading_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -67,7 +68,20 @@ class MyApp extends StatelessWidget {
                 ),
               ),
             ),
-            home: user.token == null ? const LoginScreen() : const HomeScreen(),
+            home: user.token == null
+                ? FutureBuilder(
+                    future: user.tryAutoLogin(),
+                    builder: (cntxt, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const LoadingScreen();
+                      } else if (snapshot.data == false) {
+                        return const LoginScreen();
+                      } else {
+                        return const HomeScreen();
+                      }
+                    },
+                  )
+                : const HomeScreen(),
             routes: {
               HomeScreen.routeName: (cntxt) => const HomeScreen(),
               LoginScreen.routeName: (cntxt) => const LoginScreen(),

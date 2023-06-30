@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../utils/http_exception.dart';
 
@@ -10,6 +12,7 @@ class User with ChangeNotifier {
       'https://filesharingbd.pythonanywhere.com/task-manager-api/';
   String? email;
   String? token;
+  Timer? logoutTimer;
 
   String? getEmail() => email;
   String? getToken() => token;
@@ -37,7 +40,14 @@ class User with ChangeNotifier {
         /// Create the user 'emain & token ID', when the user login successfully
         this.email = email;
         token = responseBody['token'];
+        _autologout();
         notifyListeners();
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        final Map<String, String> userAuth = {
+          'email': email,
+          'token': token as String,
+        };
+        prefs.setString('userAuth', jsonEncode(userAuth));
       } else if (responseBody.containsKey('non_field_errors') == true) {
         /// Wrong username or password
         throw HttpException(responseBody['non_field_errors'][0]);
@@ -53,6 +63,22 @@ class User with ChangeNotifier {
     } catch (error) {
       /// throw ERROR, when any errors occurs.
       throw error.toString();
+    }
+  }
+
+  Future<bool> tryAutoLogin() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if (prefs.containsKey('userAuth') == false) {
+      return false;
+    } else {
+      final Map<String, String> userAuth =
+          jsonDecode(prefs.getString('userAuth') as String);
+      token = userAuth['token'];
+      email = userAuth['email'];
+      notifyListeners();
+      _autologout();
+      return true;
     }
   }
 
@@ -100,9 +126,24 @@ class User with ChangeNotifier {
     }
   }
 
-  void logout() {
+  Future<void> logout() async {
+    if (logoutTimer != null) {
+      logoutTimer!.cancel();
+      logoutTimer = null;
+    }
     email = null;
     token = null;
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('userAuth');
     notifyListeners();
+  }
+
+  void _autologout() {
+    if (logoutTimer != null) {
+      logoutTimer!.cancel();
+    }
+
+    final int days = DateTime.now().add(const Duration(days: 1)).day;
+    logoutTimer = Timer(Duration(days: days), logout);
   }
 }
