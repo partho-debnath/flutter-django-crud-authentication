@@ -25,24 +25,22 @@ class FavoriteScreen extends StatelessWidget {
         ),
       );
     } else {
-      return ListView.builder(
+      return ListView.separated(
         itemCount: favoriteTask.length,
+        separatorBuilder: (cntxt, index) => const Divider(
+          color: Colors.grey,
+          indent: 5,
+          endIndent: 5,
+        ),
         itemBuilder: (cntxt, index) {
-          return Column(
-            children: [
-              ListTile(
-                title: Text(favoriteTask[index].getTaskAsTitle),
-                subtitle: Text(DateFormat.yMMMMEEEEd()
-                    .format(DateTime.parse(favoriteTask[index].created))),
-                trailing: const Icon(
-                  Icons.favorite,
-                  color: Colors.red,
-                ),
-              ),
-              const Divider(
-                color: Colors.grey,
-              )
-            ],
+          return ListTile(
+            title: Text(favoriteTask[index].getTaskAsTitle),
+            subtitle: Text(DateFormat.yMMMMEEEEd()
+                .format(DateTime.parse(favoriteTask[index].created))),
+            trailing: const Icon(
+              Icons.favorite,
+              color: Colors.red,
+            ),
           );
         },
       );

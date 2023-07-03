@@ -111,161 +111,172 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Create New Account'),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-          child: Column(
-            children: <Widget>[
-              Form(
-                key: _form,
-                child: Column(
-                  children: <Widget>[
-                    TextFormField(
-                      decoration: const InputDecoration(
-                        prefixIcon: Icon(Icons.person),
-                        labelText: 'First Name',
-                      ),
-                      keyboardType: TextInputType.text,
-                      textInputAction: TextInputAction.next,
-                      validator: (value) {
-                        if (value == null || value.isEmpty == true) {
-                          return 'Enter your First Name';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        _firstName = value;
-                      },
-                    ),
-                    const SizedBox(height: 10),
-                    TextFormField(
-                      decoration: const InputDecoration(
-                        prefixIcon: Icon(Icons.person),
-                        labelText: 'Last Name',
-                      ),
-                      keyboardType: TextInputType.text,
-                      textInputAction: TextInputAction.next,
-                      validator: (value) {
-                        if (value == null || value.isEmpty == true) {
-                          return 'Enter your Last Name';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        _lastName = value;
-                      },
-                    ),
-                    const SizedBox(height: 10),
-                    TextFormField(
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.email),
-                        labelText: 'Email',
-                        errorText: _emailErrorMessage,
-                      ),
-                      keyboardType: TextInputType.emailAddress,
-                      textInputAction: TextInputAction.next,
-                      validator: (value) {
-                        if (value == null || value.isEmpty == true) {
-                          return 'Enter your Username';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        _username = value;
-                      },
-                    ),
-                    const SizedBox(height: 10),
-                    TextFormField(
-                      obscureText: _passwordVisibilityOff,
-                      controller: _passwordController,
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.password),
-                        labelText: 'Password',
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _passwordVisibilityOff = !_passwordVisibilityOff;
-                            });
-                          },
-                          icon: Icon(_passwordVisibilityOff == true
-                              ? Icons.visibility
-                              : Icons.visibility_off),
+    return SafeArea(
+      child: Scaffold(
+        // appBar: AppBar(
+        //   title: const Text('Create New Account'),
+        // ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 15),
+            child: Column(
+              children: <Widget>[
+                Form(
+                  key: _form,
+                  child: Column(
+                    children: <Widget>[
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          prefixIcon: Icon(Icons.person),
+                          labelText: 'First Name',
                         ),
-                        errorText: _passwordErrorMessage,
+                        keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.next,
+                        validator: (value) {
+                          if (value == null || value.isEmpty == true) {
+                            return 'Enter your First Name';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _firstName = value;
+                        },
                       ),
-                      keyboardType: TextInputType.text,
-                      textInputAction: TextInputAction.next,
-                      validator: (value) {
-                        if (value == null || value.isEmpty == true) {
-                          return 'Enter your Password';
-                        }
-                        return null;
-                      },
-                      onEditingComplete: () {
-                        FocusScope.of(context)
-                            .requestFocus(_confirmPasswordFocusNode);
-                      },
-                    ),
-                    const SizedBox(height: 10),
-                    TextFormField(
-                      obscureText: _passwordVisibilityOff,
-                      focusNode: _confirmPasswordFocusNode,
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.password),
-                        labelText: 'Confirm Password',
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _passwordVisibilityOff = !_passwordVisibilityOff;
-                            });
-                          },
-                          icon: Icon(_passwordVisibilityOff == true
-                              ? Icons.visibility
-                              : Icons.visibility_off),
+                      const SizedBox(height: 10),
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          prefixIcon: Icon(Icons.person),
+                          labelText: 'Last Name',
                         ),
-                        errorText: _passwordErrorMessage,
+                        keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.next,
+                        validator: (value) {
+                          if (value == null || value.isEmpty == true) {
+                            return 'Enter your Last Name';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _lastName = value;
+                        },
                       ),
-                      keyboardType: TextInputType.text,
-                      textInputAction: TextInputAction.done,
-                      validator: (value) {
-                        if (value == null || value.isEmpty == true) {
-                          return 'Enter Confirm Password';
-                        } else if (_passwordController!.text.trim() !=
-                            value.trim()) {
-                          return 'Password and Confirm Password must be the same.';
-                        }
-                        return null;
-                      },
-                      onEditingComplete: () {
-                        _isValid();
-                      },
-                      onSaved: (value) {
-                        _password = value;
-                      },
-                    )
-                  ],
+                      const SizedBox(height: 10),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.email),
+                          labelText: 'Email',
+                          errorText: _emailErrorMessage,
+                        ),
+                        keyboardType: TextInputType.emailAddress,
+                        textInputAction: TextInputAction.next,
+                        validator: (value) {
+                          if (value == null || value.isEmpty == true) {
+                            return 'Enter your Username';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _username = value;
+                        },
+                      ),
+                      const SizedBox(height: 10),
+                      TextFormField(
+                        obscureText: _passwordVisibilityOff,
+                        controller: _passwordController,
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.password),
+                          labelText: 'Password',
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _passwordVisibilityOff =
+                                    !_passwordVisibilityOff;
+                              });
+                            },
+                            icon: Icon(_passwordVisibilityOff == true
+                                ? Icons.visibility
+                                : Icons.visibility_off),
+                          ),
+                          errorText: _passwordErrorMessage,
+                        ),
+                        keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.next,
+                        maxLength: 20,
+                        validator: (value) {
+                          if (value == null || value.isEmpty == true) {
+                            return 'Enter your Password';
+                          } else if (value.length < 8) {
+                            return 'Password must be at least 8 characters.';
+                          }
+                          return null;
+                        },
+                        onEditingComplete: () {
+                          FocusScope.of(context)
+                              .requestFocus(_confirmPasswordFocusNode);
+                        },
+                      ),
+                      const SizedBox(height: 10),
+                      TextFormField(
+                        obscureText: _passwordVisibilityOff,
+                        focusNode: _confirmPasswordFocusNode,
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.password),
+                          labelText: 'Confirm Password',
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _passwordVisibilityOff =
+                                    !_passwordVisibilityOff;
+                              });
+                            },
+                            icon: Icon(_passwordVisibilityOff == true
+                                ? Icons.visibility
+                                : Icons.visibility_off),
+                          ),
+                          errorText: _passwordErrorMessage,
+                        ),
+                        keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.done,
+                        maxLength: 20,
+                        validator: (value) {
+                          if (value == null || value.isEmpty == true) {
+                            return 'Enter Confirm Password';
+                          } else if (value.length < 8) {
+                            return 'Password must be at least 8 characters.';
+                          } else if (_passwordController!.text.trim() !=
+                              value.trim()) {
+                            return 'Password and Confirm Password must be the same.';
+                          }
+
+                          return null;
+                        },
+                        onEditingComplete: () {
+                          _isValid();
+                        },
+                        onSaved: (value) {
+                          _password = value;
+                        },
+                      )
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 15),
-              if (_isTimeOut)
-                const Text(
-                  'Request TimeOut, try again later.',
-                  style: TextStyle(color: Colors.red),
-                ),
-              const SizedBox(height: 15),
-              buildButton('Sign Up', () {
-                submitForm();
-              }),
-              const SizedBox(height: 15),
-              buildButton('Sign in', () {
-                Navigator.of(context)
-                    .pushReplacementNamed(LoginScreen.routeName);
-              })
-            ],
+                const SizedBox(height: 15),
+                if (_isTimeOut)
+                  const Text(
+                    'Request TimeOut, try again later.',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                const SizedBox(height: 15),
+                buildButton('Sign Up', () {
+                  submitForm();
+                }),
+                const SizedBox(height: 15),
+                buildButton('Sign in', () {
+                  Navigator.of(context)
+                      .pushReplacementNamed(LoginScreen.routeName);
+                })
+              ],
+            ),
           ),
         ),
       ),

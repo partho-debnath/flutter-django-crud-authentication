@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -80,92 +82,118 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login'),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-          child: Column(
-            children: <Widget>[
-              Form(
-                key: _form,
-                child: Column(
-                  children: <Widget>[
-                    TextFormField(
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.email),
-                        labelText: 'Email',
-                        errorText: _emalErrorMessage,
-                      ),
-                      keyboardType: TextInputType.emailAddress,
-                      textInputAction: TextInputAction.next,
-                      validator: (value) {
-                        if (value == null || value.isEmpty == true) {
-                          return 'Enter your Username';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        _username = value;
-                      },
+    return SafeArea(
+      child: Scaffold(
+        // appBar: AppBar(
+        //   title: const Text('Login'),
+        // ),
+        body: Center(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    height: 70,
+                    width: 200,
+                    alignment: Alignment.center,
+                    transform: Matrix4.rotationZ(-20 * pi / 180),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(95, 103, 68, 168),
+                      borderRadius: BorderRadius.circular(10.0),
                     ),
-                    const SizedBox(height: 10),
-                    TextFormField(
-                      obscureText: _passwordVisibilityOff,
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.password),
-                        labelText: 'Password',
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _passwordVisibilityOff = !_passwordVisibilityOff;
-                            });
+                    child: const Text(
+                      'Task Manager',
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 178, 192, 240),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Form(
+                    key: _form,
+                    child: Column(
+                      children: <Widget>[
+                        TextFormField(
+                          decoration: InputDecoration(
+                            prefixIcon: const Icon(Icons.email),
+                            labelText: 'Email',
+                            errorText: _emalErrorMessage,
+                          ),
+                          keyboardType: TextInputType.emailAddress,
+                          textInputAction: TextInputAction.next,
+                          validator: (value) {
+                            if (value == null || value.isEmpty == true) {
+                              return 'Enter your Username';
+                            }
+                            return null;
                           },
-                          icon: Icon(_passwordVisibilityOff == true
-                              ? Icons.visibility
-                              : Icons.visibility_off),
+                          onSaved: (value) {
+                            _username = value;
+                          },
                         ),
-                        errorText: _passwordErrorMessage,
-                      ),
-                      keyboardType: TextInputType.text,
-                      textInputAction: TextInputAction.done,
-                      maxLength: 20,
-                      validator: (value) {
-                        if (value == null || value.isEmpty == true) {
-                          return 'Enter your Password';
-                        } else if (value.length < 8) {
-                          return 'Password must be at least 8 characters.';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        _password = value;
-                      },
-                      onEditingComplete: () {
-                        _isValid();
-                      },
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          obscureText: _passwordVisibilityOff,
+                          decoration: InputDecoration(
+                            prefixIcon: const Icon(Icons.password),
+                            labelText: 'Password',
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  _passwordVisibilityOff =
+                                      !_passwordVisibilityOff;
+                                });
+                              },
+                              icon: Icon(_passwordVisibilityOff == true
+                                  ? Icons.visibility
+                                  : Icons.visibility_off),
+                            ),
+                            errorText: _passwordErrorMessage,
+                          ),
+                          keyboardType: TextInputType.text,
+                          textInputAction: TextInputAction.done,
+                          maxLength: 20,
+                          validator: (value) {
+                            if (value == null || value.isEmpty == true) {
+                              return 'Enter your Password';
+                            } else if (value.length < 8) {
+                              return 'Password must be at least 8 characters.';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            _password = value;
+                          },
+                          onEditingComplete: () {
+                            _isValid();
+                          },
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 15),
+                  if (_isRequestTimeOut)
+                    const Text(
+                      'Request TimeOut, try again later.',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  const SizedBox(height: 15),
+                  buildButton('Sign in', () {
+                    submitForm();
+                  }),
+                  const SizedBox(height: 15),
+                  buildButton('Create new account', () {
+                    Navigator.of(context)
+                        .pushReplacementNamed(RegistrationScreen.routeName);
+                  }),
+                ],
               ),
-              const SizedBox(height: 15),
-              if (_isRequestTimeOut)
-                const Text(
-                  'Request TimeOut, try again later.',
-                  style: TextStyle(color: Colors.red),
-                ),
-              const SizedBox(height: 15),
-              buildButton('Sign in', () {
-                submitForm();
-              }),
-              const SizedBox(height: 15),
-              buildButton('Create new account', () {
-                Navigator.of(context)
-                    .pushReplacementNamed(RegistrationScreen.routeName);
-              }),
-            ],
+            ),
           ),
         ),
       ),

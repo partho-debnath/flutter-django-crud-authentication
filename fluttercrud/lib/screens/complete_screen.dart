@@ -26,24 +26,22 @@ class CompleteScreen extends StatelessWidget {
         ),
       );
     } else {
-      return ListView.builder(
+      return ListView.separated(
         itemCount: completedTask.length,
+        separatorBuilder: (cntxt, index) => const Divider(
+          color: Colors.grey,
+          indent: 5,
+          endIndent: 5,
+        ),
         itemBuilder: (cntxt, index) {
-          return Column(
-            children: [
-              ListTile(
-                leading: const Icon(
-                  Icons.done,
-                  color: Colors.green,
-                ),
-                title: Text(completedTask[index].getTaskAsTitle),
-                subtitle: Text(DateFormat.yMMMMEEEEd()
-                    .format(DateTime.parse(completedTask[index].updated))),
-              ),
-              const Divider(
-                color: Colors.grey,
-              )
-            ],
+          return ListTile(
+            leading: const Icon(
+              Icons.done,
+              color: Colors.green,
+            ),
+            title: Text(completedTask[index].getTaskAsTitle),
+            subtitle: Text(DateFormat.yMMMMEEEEd()
+                .format(DateTime.parse(completedTask[index].updated))),
           );
         },
       );

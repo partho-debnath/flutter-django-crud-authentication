@@ -38,7 +38,7 @@ class TaskProvider with ChangeNotifier {
     _tasks.clear();
   }
 
-  Future<void> fetchTask() async {
+  Future<List<Task>> fetchTask() async {
     List<Task> tasks = [];
     try {
       var url = Uri.parse('${domain}task-list/');
@@ -65,7 +65,7 @@ class TaskProvider with ChangeNotifier {
       throw error.toString();
     }
     _tasks = tasks;
-    notifyListeners();
+    return _tasks;
   }
 
   Task getTaskById(int id) {
@@ -162,9 +162,14 @@ class TaskProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void deleteTaskFromList(int id) {
-    tasks.removeWhere((item) => item.id == id);
-    deleteTask(id);
+  Future<void> deleteTaskFromList(int id) async {
+    try {
+      await deleteTask(id);
+      tasks.removeWhere((item) => item.id == id);
+    } catch (error) {
+      throw error.toString();
+    }
+
     notifyListeners();
   }
 

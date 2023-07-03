@@ -56,6 +56,7 @@ class HomeScreen extends StatelessWidget {
     final TaskProvider userTaskProvider = Provider.of<TaskProvider>(context);
 
     return DefaultTabController(
+      initialIndex: 0,
       length: 3,
       child: Scaffold(
         appBar: AppBar(
@@ -71,12 +72,14 @@ class HomeScreen extends StatelessWidget {
               onSelected: (SelectedOptions selectedOptions) {
                 switch (selectedOptions) {
                   case SelectedOptions.logout:
-                    showLogoutDialog(context).then((value) {
-                      if (value == true) {
-                        userTaskProvider.clear();
-                        Provider.of<User>(context, listen: false).logout();
-                      }
-                    });
+                    showLogoutDialog(context).then(
+                      (value) {
+                        if (value == true) {
+                          userTaskProvider.clear();
+                          Provider.of<User>(context, listen: false).logout();
+                        }
+                      },
+                    );
                 }
               },
               itemBuilder: (cntxt) {
@@ -116,13 +119,32 @@ class HomeScreen extends StatelessWidget {
         ),
         body: FutureBuilder(
           future: userTaskProvider.fetchTask(),
-          builder: (cntxt, spanshot) => const TabBarView(
-            children: [
-              ListScreen(),
-              FavoriteScreen(),
-              CompleteScreen(),
-            ],
-          ),
+          builder: (cntxt, spanshot) {
+            if (spanshot.connectionState == ConnectionState.waiting) {
+              return const TabBarView(
+                children: [
+                  Center(child: CircularProgressIndicator()),
+                  Center(child: CircularProgressIndicator()),
+                  Center(child: CircularProgressIndicator()),
+                ],
+              );
+            } else if (spanshot.hasData) {
+              return const TabBarView(
+                children: [
+                  ListScreen(),
+                  FavoriteScreen(),
+                  CompleteScreen(),
+                ],
+              );
+            }
+            return const TabBarView(
+              children: [
+                Center(child: Text('There is something wrong!')),
+                Center(child: Text('There is something wrong!')),
+                Center(child: Text('There is something wrong!')),
+              ],
+            );
+          },
         ),
       ),
     );

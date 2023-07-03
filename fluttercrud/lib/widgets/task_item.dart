@@ -25,9 +25,9 @@ class TaskItem extends StatelessWidget {
         ),
         padding: const EdgeInsets.only(right: 20),
         alignment: Alignment.centerRight,
-        child: Row(
+        child: const Row(
           mainAxisSize: MainAxisSize.min,
-          children: const [
+          children: [
             Text('Delete'),
             SizedBox(width: 20),
             Icon(Icons.delete),
@@ -35,9 +35,9 @@ class TaskItem extends StatelessWidget {
         ),
       ),
       direction: DismissDirection.endToStart,
-      onDismissed: (direction) {
+      onDismissed: (direction) async {
         if (direction == DismissDirection.endToStart) {
-          userTaskProvider.deleteTaskFromList(task.id);
+          await userTaskProvider.deleteTaskFromList(task.id);
         }
       },
       confirmDismiss: (direction) {
@@ -85,15 +85,20 @@ class TaskItem extends StatelessWidget {
           leading: Consumer<Task>(
             builder: (cntxt, myTask, child) {
               return IconButton(
-                onPressed: () {
+                onPressed: () async {
                   myTask.togolFavoriteTask();
-                  userTaskProvider.updateTaskFavorites(myTask.id);
+                  await userTaskProvider.updateTaskFavorites(myTask.id);
                 },
-                icon: Icon(
-                  myTask.isfavorite == true
-                      ? Icons.favorite
-                      : Icons.favorite_border,
-                  color: Colors.red,
+                icon: Visibility(
+                  replacement: const Icon(
+                    Icons.favorite_border,
+                    color: Colors.red,
+                  ),
+                  visible: myTask.isfavorite,
+                  child: const Icon(
+                    Icons.favorite,
+                    color: Colors.red,
+                  ),
                 ),
               );
             },
@@ -104,9 +109,9 @@ class TaskItem extends StatelessWidget {
                 value: _task.iscomplete,
                 activeColor: Colors.green,
                 checkColor: Colors.white,
-                onChanged: (value) {
+                onChanged: (value) async {
                   _task.togolCompleteTask();
-                  userTaskProvider.updateTaskCompleted(_task.id);
+                  await userTaskProvider.updateTaskCompleted(_task.id);
                 },
               );
             },
