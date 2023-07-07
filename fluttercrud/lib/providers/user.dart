@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart' show Response;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../utils/http_exception.dart';
@@ -20,8 +21,8 @@ class User with ChangeNotifier {
   Future<void> loginUser(String email, String password) async {
     Map<String, String> user = {'username': email, 'password': password};
     try {
-      var url = Uri.parse('${domain}api-token-auth/');
-      final response = await http
+      final Uri url = Uri.parse('${domain}api-token-auth/');
+      final Response response = await http
           .post(
         url,
         headers: <String, String>{
@@ -94,8 +95,8 @@ class User with ChangeNotifier {
     };
 
     try {
-      var url = Uri.parse('${domain}create-user/');
-      final response = await http
+      final Uri url = Uri.parse('${domain}create-user/');
+      final Response response = await http
           .post(
         url,
         headers: <String, String>{

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart' show Response;
 
 import './taks.dart';
 
@@ -18,8 +19,14 @@ class TaskProvider with ChangeNotifier {
     required this.email,
     required this.token,
     required List<Task> tasks,
-  }) {
-    _tasks = tasks;
+  }) : _tasks = tasks;
+
+  factory TaskProvider.fromJson(List<dynamic> jsonTaskList) {
+    final List<Task> taskList = [];
+    for (Map<String, dynamic> jsonTask in jsonTaskList) {
+      taskList.insert(0, Task.fromJson(jsonTask));
+    }
+    return TaskProvider(email: null, token: null, tasks: taskList);
   }
 
   List<Task> get tasks {
@@ -39,10 +46,9 @@ class TaskProvider with ChangeNotifier {
   }
 
   Future<List<Task>> fetchTask() async {
-    List<Task> tasks = [];
     try {
-      var url = Uri.parse('${domain}task-list/');
-      final response = await http.get(
+      final Uri url = Uri.parse('${domain}task-list/');
+      final Response response = await http.get(
         url,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
@@ -50,22 +56,13 @@ class TaskProvider with ChangeNotifier {
         },
       );
 
-      List<dynamic> listOfTask = json.decode(response.body);
-      for (Map<String, dynamic> item in listOfTask) {
-        tasks.add(Task(
-          id: item['id'],
-          task: item['task'],
-          isfavorite: item['isfavorite'],
-          iscomplete: item['iscomplete'],
-          created: item['created'],
-          updated: item['updated'],
-        ));
-      }
+      final List<dynamic> jsonTasks = json.decode(response.body);
+      final TaskProvider taskProvider = TaskProvider.fromJson(jsonTasks);
+      _tasks = taskProvider.tasks;
+      return taskProvider.tasks;
     } catch (error) {
       throw error.toString();
     }
-    _tasks = tasks;
-    return _tasks;
   }
 
   Task getTaskById(int id) {
@@ -75,7 +72,7 @@ class TaskProvider with ChangeNotifier {
   Future<void> updateTaskCompleted(int id) async {
     Task existingTask = getTaskById(id);
     try {
-      var url = Uri.parse('${domain}task-list/$id/update-task/');
+      final Uri url = Uri.parse('${domain}task-list/$id/update-task/');
       Map<String, dynamic> task = {
         'iscomplete': existingTask.iscomplete,
       };
@@ -96,7 +93,7 @@ class TaskProvider with ChangeNotifier {
   Future<void> updateTaskFavorites(int id) async {
     Task existingTask = getTaskById(id);
     try {
-      var url = Uri.parse('${domain}task-list/$id/update-task/');
+      final Uri url = Uri.parse('${domain}task-list/$id/update-task/');
       Map<String, dynamic> task = {
         'isfavorite': existingTask.isfavorite,
       };
@@ -117,7 +114,7 @@ class TaskProvider with ChangeNotifier {
   Future<void> updateTaskText(int id) async {
     Task existingTask = getTaskById(id);
     try {
-      var url = Uri.parse('${domain}task-list/$id/update-task/');
+      final Uri url = Uri.parse('${domain}task-list/$id/update-task/');
       Map<String, dynamic> task = {
         'task': existingTask.task,
       };
@@ -139,13 +136,13 @@ class TaskProvider with ChangeNotifier {
       int id, String text, bool iscomplete, bool isfavorite) async {
     Task existingTask = getTaskById(id);
     try {
-      var url = Uri.parse('${domain}task-list/$id/update-task/');
-      Map<String, dynamic> task = {
-        'id': existingTask.id,
-        'task': text,
-        'iscomplete': iscomplete,
-        'isfavorite': isfavorite,
-      };
+      final Uri url = Uri.parse('${domain}task-list/$id/update-task/');
+
+      existingTask.setTask(
+        task: text,
+        iscomplete: iscomplete,
+        isfavorite: isfavorite,
+      );
 
       await http.put(
         url,
@@ -153,7 +150,7 @@ class TaskProvider with ChangeNotifier {
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'TOKEN $token',
         },
-        body: json.encode(task),
+        body: json.encode(existingTask),
       );
     } catch (error) {
       throw error.toString();
@@ -175,7 +172,7 @@ class TaskProvider with ChangeNotifier {
 
   Future<void> deleteTask(int id) async {
     try {
-      var url = Uri.parse('${domain}task-list/$id/delete-task/');
+      final Uri url = Uri.parse('${domain}task-list/$id/delete-task/');
       await http.delete(
         url,
         headers: <String, String>{
@@ -189,32 +186,27 @@ class TaskProvider with ChangeNotifier {
   }
 
   Future<void> addNewTask(String task, bool complete, bool favorite) async {
-    Map<String, dynamic> userTask = {
-      'task': task,
-      'iscomplete': complete,
-      'isfavorite': favorite,
-    };
+    final Task tempTask = Task(
+      id: 0,
+      task: task,
+      iscomplete: complete,
+      isfavorite: favorite,
+      created: "",
+      updated: '',
+    );
 
     try {
-      var url = Uri.parse('${domain}create-user-task/');
-      var response = await http.post(
+      final Uri url = Uri.parse('${domain}create-user-task/');
+      final Response response = await http.post(
         url,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'TOKEN $token',
         },
-        body: json.encode(userTask),
+        body: json.encode(tempTask),
       );
-      Map<String, dynamic> userNewTask = json.decode(response.body);
-      Task newTask = Task(
-        id: userNewTask['id'],
-        task: userNewTask['task'],
-        iscomplete: userNewTask['iscomplete'],
-        isfavorite: userNewTask['isfavorite'],
-        created: userNewTask['created'],
-        updated: userNewTask['updated'],
-      );
-      _tasks.insert(0, newTask);
+      Map<String, dynamic> jsonTask = json.decode(response.body);
+      _tasks.insert(0, Task.fromJson(jsonTask));
       notifyListeners();
     } catch (error) {
       throw error.toString();

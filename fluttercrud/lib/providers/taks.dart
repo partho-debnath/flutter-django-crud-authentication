@@ -17,6 +17,26 @@ class Task with ChangeNotifier {
     required this.updated,
   });
 
+  factory Task.fromJson(Map<String, dynamic> json) {
+    return Task(
+      id: json['id'],
+      task: json['task'],
+      isfavorite: json['isfavorite'],
+      iscomplete: json['iscomplete'],
+      created: json['created'],
+      updated: json['updated'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'task': task,
+      'iscomplete': iscomplete,
+      'isfavorite': isfavorite,
+    };
+  }
+
   void togolCompleteTask() {
     iscomplete = !iscomplete;
     notifyListeners();
@@ -27,8 +47,17 @@ class Task with ChangeNotifier {
     notifyListeners();
   }
 
+  void setTask({String? task, bool? iscomplete, bool? isfavorite}) {
+    this.task = task ?? this.task;
+    this.iscomplete = iscomplete ?? this.iscomplete;
+    this.isfavorite = isfavorite ?? this.isfavorite;
+  }
+
   String get getTaskAsTitle {
     final int length = task.length > 25 ? 25 : task.length;
-    return '${task.substring(0, length)}....';
+    if (length <= 25) {
+      return task;
+    }
+    return '${task.substring(0, length)}...';
   }
 }
